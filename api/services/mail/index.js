@@ -1,0 +1,1 @@
+exports.sendMail = require('./mail');
