@@ -18,15 +18,24 @@ const users = new mongodb.Schema({
         required: false,
         default: "default.png"
     },
+    token: {
+        type:String,
+        required: true
+    },
     role: {
         type: Number,
         required: false,
         default : 0
         /* 0 = Normal
            1 = Moderator(Delete scripts)
-           3 = Administrator(Delete users, scripts)
-           4 = Owner(Do anything)
+           2 = Administrator(Delete users, scripts)
+           3 = Owner(Do anything)
         */
+    },
+    verifiedDev: {
+        type: Boolean,
+        required: false,
+        default: false  
     }
 });
 

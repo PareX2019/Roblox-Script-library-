@@ -11,7 +11,8 @@ app.use(express.json(), cors({
     origin: '*',
     optionsSuccessStatus: 200
 }), helmet()).use((err, req, res, nex) => {
-   return res.status(500).json({
+   res.status(500);
+   return res.json({
        error: true,
        message: err.message
    });
