@@ -5,7 +5,7 @@ app = express(),
 helmet = require('helmet'),
 cors = require('cors'),
 port = process.env.PORT || 3000,
-db = require('./db/controller/main');
+db = require('./db/controller/mongo');
 
 const logger = require('./base/logger');
 
@@ -20,5 +20,5 @@ app.use(express.json(), cors({
    });
 });
 
-db.connectDB().on('error', (e) => logger.fatal(`Mongo error: ${e.message}`));
+db.on('error', (e) => logger.fatal(`Mongo error: ${e.message}`));
 app.listen(port, () => logger.info(`Running: http://localhost:${port}`));
