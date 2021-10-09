@@ -38,18 +38,27 @@ function generateToken() {
 */
 exports.register = async (req, res, next) => {
     try {
-        if (!emailValidator.validate(req.body.email))
+        if (!emailValidator.validate(req.body.email)) {
+            res.status(400);
             throw 'Invalid email.';
+        }
 
-        if (req.body.username.length > 12)
+        if (req.body.username.length > 12) {
+            res.status(400);
             throw 'Username must only contain less than 12 characters';
+        }
 
-        if (!validatePassword(req.body.password))
+        if (!validatePassword(req.body.password)) {
+            res.status(400);
             throw 'Password must be secure!';
+        }
 
         req.body.username.split('').forEach(c => {
-            if (!("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".split('').includes(c)))
+            if (!("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".split('').includes(c))) {
+                res.status(400);
                 throw 'Invalid characters in useranme';
+            }
+
         });
 
         const userCheck = await userDB.findOne({
@@ -59,7 +68,10 @@ exports.register = async (req, res, next) => {
             }]
         });
 
-        if (userCheck) throw 'User with that email or username already exists';
+        if (userCheck) {
+            res.status(409);
+            throw 'User with that email or username already exists';
+        }
 
         let token = generateToken();
 
@@ -84,7 +96,6 @@ exports.register = async (req, res, next) => {
         });
 
     } catch (ex) {
-        res.status(500);
         next(new Error(ex.message));
     }
 }
@@ -95,16 +106,16 @@ exports.login = async (req, res, next) => {
             username: req.body.username
         });
 
-        if(!user){
+        if (!user) {
             res.status(404);
             throw 'User not found!';
         }
 
-        if(!await compare(req.body.password, user.password)){
+        if (!await compare(req.body.password, user.password)) {
             res.status(401)
             throw 'Unauthorized';
         }
-        
+
         let tokenCode = generateToken();
 
         user.token = tokenCode;
@@ -119,3 +130,12 @@ exports.login = async (req, res, next) => {
         next(new Error(ex.message));
     }
 };
+
+exports.resetPassword = async(req,res,next) => {
+    try{
+        
+    }
+    catch(ex){
+        next(new Error(ex.message));
+    }
+}
