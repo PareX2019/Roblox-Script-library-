@@ -121,6 +121,8 @@ exports.login = async (req, res, next) => {
         user.token = tokenCode;
         await user.save();
 
+
+
         res.status(200).json({
             error: false,
             message: tokenCode
@@ -131,11 +133,98 @@ exports.login = async (req, res, next) => {
     }
 };
 
-exports.resetPassword = async(req,res,next) => {
-    try{
-        
-    }
-    catch(ex){
+exports.sendResetEmail = async (req, res, next) => {
+    try {
+        let hash = generateToken();
+
+        const user = await userDB.findOne({
+            email: req.body.email
+        });
+        if (!user) {
+            res.status(404);
+            throw 'User not found!';
+        }
+
+        user.reset_hash = hash;
+        await user.save();
+
+        const resetUrl = `http://localhost:3000/reset/${hash}/${user.email}`;
+
+        sendMail({
+            to: user.email,
+            subject: 'Password Reset | tonyproject',
+            html: `${resetUrl}`
+        });
+
+        res.status(200).json({
+            error: false,
+            message: 'Success'
+        });
+
+        //expire in 5 minutes
+        setTimeout(async () => {
+            user.reset_hash = "";
+            await user.save();
+        }, 300000)
+    } catch (ex) {
         next(new Error(ex.message));
     }
 }
+
+exports.validateResetToken = async (req, res, next) => {
+    try {
+        const user = await userDB.findOne({
+            email: req.body.email
+        });
+        if (!user) {
+            res.status(404);
+            throw 'User not found!';
+        }
+
+        if (user.reset_hash !== req.body.token) {
+            res.status(440);
+            throw 'Session Expired';
+        }
+
+        res.status(200).json({
+            error: false,
+            message: 'Success'
+        });
+
+    } catch (ex) {
+        next(new Error(ex.message));
+    }
+}
+
+exports.resetPassword = async (req, res, next) => {
+    try {
+        const user = await userDB.findOne({
+            email: req.body.email
+        });
+        if (!user) {
+            res.status(404);
+            throw 'User not found!';
+        }
+
+        if (user.reset_hash !== req.body.token) {
+            res.status(440);
+            throw 'Session Expired';
+        }
+  
+        if (!validatePassword(req.body.password)) {
+            res.status(400);
+            throw 'Password must be secure!';
+        }
+
+        user.password = await hash(req.body.password, 10);
+        user.reset_hash = "";
+        await user.save();
+
+        res.status(200).json({
+            error: false,
+            message: 'Success'
+        });
+    } catch (ex) {
+        next(new Error(ex.message));
+    }
+};

@@ -9,6 +9,10 @@ const users = new mongodb.Schema({
         type: String,
         required: true
     },
+    reset_hash : {
+       type: String,
+       required: false
+    },
     password: {
         type: String,
         required: true
