@@ -36,7 +36,7 @@ const users = new mongodb.Schema({
            3 = Owner(Do anything)
         */
     },
-    verifiedDev: {
+    verifiedEmail: {
         type: Boolean,
         required: false,
         default: false  

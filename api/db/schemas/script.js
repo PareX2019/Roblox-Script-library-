@@ -13,6 +13,10 @@ const scripts = new mongodb.Schema({
         type: String,
         required: true
     },
+    script : {
+        type: String,
+        required : true
+    },
     tags: {
         type: Array,
         required: false
