@@ -25,6 +25,16 @@ const scripts = new mongodb.Schema({
         type: String,
         required : true
     },
+    downloads : {
+        type: Number,
+        required: false,
+        default: 0
+    },
+    downloadsArray: {
+        type: Array,
+        required : false,
+        default: []
+    },
     rank: {
         type: Number,
         required: false,

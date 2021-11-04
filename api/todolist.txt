@@ -1,0 +1,2 @@
+check if user exists - done
+verify email check - donecheck if 

@@ -7,40 +7,33 @@ const S3 = require('aws-sdk/clients/s3'),
 
 
 exports.uploadGeneral = (file, name) => {
-    s3.upload({
+   return s3.upload({
         Bucket: bucket,
         Body: file,
         Key: name
-    }, (err, data) => {
-        if (err) {
-            return false;
-        }
-        return data;
-    });
+    }).promise();
 }
 
 exports.uploadScript = (file, name) => {
-    s3.upload({
+    return s3.upload({
         Bucket: bucket + '/scripts',
         Body: file,
         Key: name
-    }, (err, data) => {
-        if (err) {
-            return false;
-        }
-        return data;
-    });
+    }).promise();
 }
 
 exports.uploadAvatar = (file, name) => {
-    s3.upload({
+    return s3.upload({
         Bucket: bucket + '/avatars',
         Body: file,
         Key: name
-    }, (err, data) => {
-        if (err) {
-            return false;
-        }
-        return data;
-    });
+    }).promise();
+}
+
+exports.uploadThubnail = (file, name) => {
+    return s3.upload({
+        Bucket: bucket + '/thubnails',
+        Body: file,
+        Key: name
+    }).promise();
 }
