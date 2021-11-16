@@ -40,6 +40,10 @@ const users = new mongodb.Schema({
         type: Boolean,
         required: false,
         default: false  
+    },
+    change_email_hash: {
+        type: String,
+        required: false,
     }
 });
 

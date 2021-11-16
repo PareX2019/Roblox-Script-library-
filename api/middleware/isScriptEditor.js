@@ -19,13 +19,11 @@ module.exports = async (req, res, next) => {
             throw Error(`Script with the ID of ${req.headers.scriptid} was not found.`);
         }
 
-        if(script.owner != user.username){
-            {
-                res.status(401);
-                throw Error('Unauthorized');
-            }
+        if(!((script.owner == user.username) || (user.rank > 0))){
+            res.status(401);
+            throw Error('Unauthorized');
         }
-
+        
         next();
     } catch (e) {
         next(new Error(e.message));

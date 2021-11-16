@@ -94,10 +94,10 @@ exports.upload = (req, res) => {
             thubnail = thubnail.Key;
         }
 
-        var script = await S3.uploadScript(req.files['script'][0])
+        var script = await S3.uploadScript(req.files['script'][0].buffer, `${uuidv4}.${req.files['script'][0].originalname.split('.').pop()}`)
         if (!script) {
             res.status(500);
-            throw 'Failed to upload scrippt.';
+            throw 'Failed to upload script.';
         } else {
             script = script.Key;
         }
